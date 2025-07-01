@@ -1,0 +1,32 @@
+[build]
+  publish = "dist" # Directorio donde se encuentran tus archivos compilados (tu carpeta 'dist')
+  command = "npm run build" # El comando que Netlify debe ejecutar para construir tu aplicación
+
+[[forms]]
+  name = "fuxion_reco_form" # Este DEBE COINCIDIR exactamente con el 'name' de tu <form> en ClientForm.tsx
+  # action = "/gracias" # Opcional: una URL a la que redirigir después de enviar el formulario
+  # # Habilitar notificaciones para este formulario (opcional, si no usas webhooks por ahora)
+  # # submission = { hook_url = "URL_DE_MAKE_COM_AQUI" } # No es necesario si usas el webhook en el panel de Netlify
+
+  # Campos opcionales (puedes listarlos o no, Netlify los detecta si están en el HTML)
+  # fields = [
+  #   { name = "name", type = "text" },
+  #   { name = "email", type = "email" },
+  #   { name = "phone", type = "text" },
+  #   { name = "age", type = "number" },
+  #   { name = "gender", type = "text" },
+  #   { name = "occupation", type = "text" },
+  #   { name = "activityLevel", type = "text" },
+  #   { name = "dietType", type = "text" },
+  #   { name = "customDietType", type = "text" },
+  #   { name = "mealRegularity", type = "text" },
+  #   { name = "waterIntake", type = "text" },
+  #   { name = "exerciseFrequency", type = "text" },
+  #   { name = "exerciseType", type = "text" },
+  #   { name = "sleepHours", type = "number" },
+  #   { name = "sleepQuality", type = "text" },
+  #   { name = "commonSymptoms", type = "text[]" }, # Para múltiples selecciones como checkboxes
+  #   { name = "medicalConditions", type = "text" },
+  #   { name = "currentMedications", type = "text" },
+  #   { name = "additionalInfo", type = "text" }
+  # ]
