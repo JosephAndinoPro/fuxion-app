@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ClientInfo, FormStep } from '../types';
 import { FORM_STEPS } from '../constants';
@@ -8,7 +7,6 @@ import StepLifestyle from './StepLifestyle';
 import StepGeneralHealth from './StepGeneralHealth';
 import ProgressBar from './ProgressBar';
 import { ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon } from './IconComponents';
-
 
 interface ClientFormProps {
   initialClientInfo: ClientInfo;
@@ -41,18 +39,17 @@ const ClientForm: React.FC<ClientFormProps> = ({ initialClientInfo, onSubmit, on
     } else if (name === 'age' || name === 'sleepHours') {
         processedValue = value === '' ? '' : parseInt(value, 10);
         if (isNaN(processedValue as number) && value !== '') { // only if value is not empty and not a number
-             processedValue = formData[name as keyof ClientInfo] as string | number; // keep previous value
+            processedValue = formData[name as keyof ClientInfo] as string | number; // keep previous value
         } else if (value === '') {
             processedValue = '';
         }
     }
 
-
     const newFormData = { ...formData, [name]: processedValue };
     setFormData(newFormData);
     onClientInfoChange(newFormData); // Notify parent about the change
 
-     // Basic validation example (clearing error on change)
+      // Basic validation example (clearing error on change)
     if (errors[name as keyof ClientInfo]) {
       setErrors(prevErrors => ({ ...prevErrors, [name]: undefined }));
     }
@@ -103,7 +100,6 @@ const ClientForm: React.FC<ClientFormProps> = ({ initialClientInfo, onSubmit, on
     return isValid;
   };
 
-
   const nextStep = () => {
     if (validateStep()) {
       if (currentStep < FORM_STEPS.length - 1) {
@@ -119,9 +115,11 @@ const ClientForm: React.FC<ClientFormProps> = ({ initialClientInfo, onSubmit, on
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Esto es importante para que React maneje el envío
     if (validateStep()) {
       onSubmit(formData);
+      // Netlify Forms intercepta el envío POST estándar del HTML
+      // No necesitas un fetch() o axios.post() aquí para Netlify Forms
     }
   };
 
@@ -141,10 +139,16 @@ const ClientForm: React.FC<ClientFormProps> = ({ initialClientInfo, onSubmit, on
   };
 
   return (
-    <form name="fuxion_reco_form" // <-- Añade esta línea (puedes cambiar el nombre a algo descriptivo)
-    method="POST" 
-    data-netlify="true" // <-- Añade esta línea
-    onSubmit={handleSubmit} className="space-y-8">
+    <form 
+      name="fuxion_reco_form" // <-- ¡Nombre del formulario que Netlify debe detectar!
+      method="POST" 
+      data-netlify="true" // <-- Atributo clave para Netlify
+      onSubmit={handleSubmit} 
+      className="space-y-8"
+    >
+      {/* ¡Este campo oculto es CRÍTICO para la detección de formularios en SPAs con Netlify! */}
+      <input type="hidden" name="form-name" value="fuxion_reco_form" /> 
+
       <ProgressBar currentStep={currentStep} totalSteps={FORM_STEPS.length} stepNames={FORM_STEPS.map(s => s.name)} />
       
       <div className="p-6 bg-white/50 backdrop-blur-sm rounded-lg shadow-md min-h-[300px]">
@@ -172,7 +176,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ initialClientInfo, onSubmit, on
           </button>
         ) : (
           <button
-            type="submit"
+            type="submit" // <-- Este debe ser type="submit" para que Netlify lo intercepte
             className="flex items-center px-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow hover:bg-green-600 transition duration-150"
           >
             <CheckCircleIcon className="h-5 w-5 mr-2" />
